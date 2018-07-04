@@ -1,0 +1,37 @@
+{
+  "version" : "0.0.1",
+  "name": "php-promise/promise",
+  "type": "library",
+  "description": "PHP Promise",
+  "keywords": ["promise"],
+  "homepage": "https://mem.ooo",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "memory",
+      "email": "memory.agape.works@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Promise\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Promise\\Test\\": "tests/Test"
+    }
+  },
+  "scripts" : {
+    "phpcs" : "vendor/bin/phpcs --standard=PSR2 src/",
+    "phpunit" : "docker-compose -f tests/docker-compose.yml up -d --build &>/dev/null && docker-compose -f tests/docker-compose.yml exec -T php_promise_test /tmp/vendor/bin/phpunit /tmp/tests/Test/ && docker kill $(docker ps -n=1 -q) &>/dev/null"
+  },
+  "minimum-stability": "dev",
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.3",
+    "phpunit/phpunit": "^7.2"
+  }
+}
