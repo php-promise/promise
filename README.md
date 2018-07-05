@@ -39,7 +39,7 @@ RUN echo extension=pthreads.so >> /usr/local/lib/php.ini
 
 # The PHP Promise structure
 The PHP Promise structure is below.
-![The Promise structure](https://user-images.githubusercontent.com/1282995/42298182-90f2785a-803f-11e8-95fd-6f87ef306d0f.jpeg) 
+![The Promise structure](https://user-images.githubusercontent.com/1282995/42298295-20c6456a-8040-11e8-9c66-8b3422d327c8.jpeg) 
 
 # Requirements
 
