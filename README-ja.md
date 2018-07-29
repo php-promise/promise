@@ -180,3 +180,16 @@ $handle = fopen('test.log', 'rw');
      echo 'You can see this message when `$resolve` or `$catch` called.';
 });
 ```
+
+# ユニットテスト
+
+PHPUnitでのテスト:
+
+```
+$ composer run-script phpunit  
+```
+
+コーディングスタイルのテスト:
+```
+$ composer run-script phpcs 
+```
