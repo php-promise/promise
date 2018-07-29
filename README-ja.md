@@ -103,7 +103,7 @@ $promises[] = (new \Promise\Promise(function (Resolver $resolve, Rejecter $rejec
 # 提供しているメソッド
 
 ## Promise::__construct( callable $callee( Resolver $resolve, Rejecter $reject, ...$parameters ), ...$parameters ): Promise
-- The constructor is called from your code and immediately runs `$callee` function.
+- `$callee` 関数はコンストラクタの定義時に即座に呼ばれます。.
 - `$callee` は `$resolve` と `$reject` の2つのコールバック関数のパラメータを受け取ります。
 - `$resolve` は `$callee` で呼ばれると、即時に `Promise::then` を呼びます。.
 - `$reject` は `$callee` で呼ばれると、即時に `Promise::catch` を呼びます。.
@@ -113,7 +113,7 @@ $promises[] = (new \Promise\Promise(function (Resolver $resolve, Rejecter $rejec
 
 ```php
 (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject) {
-    // Promise call `then` method when you called `$resolve` here.
+    // `$resolve` をPromise上で呼ぶと `then` メソッドが呼ばれます。
     $resolve();
     
     // `$reject` を呼ぶと reject メソッドが実行されます。
@@ -139,10 +139,10 @@ $handle = fopen('test.log', 'rw');
 - 複数のPromiseの処理結果を待ちます。
 
 ## Promise::race( Promise ...$promises ): Promise
-- `Promise::race` return a Promise when promise get a success or failed.
+- `Promise::race` は 渡されたパラメータのいずれかの処理が `resolve` もしくは `reject` 担った際に呼ばれます。 
 
 ## Promise::then( callable $onFulfilled, callable $rejected ): Promise
-- `Promise::catch` is called when `$resolve` is called.
+- Promise上で、 `$resolve` が呼ばれた際に `Promise::then` が呼ばれます。
 
 例)
 ```php
