@@ -158,4 +158,34 @@ class PromiseTest extends TestCase
         $this->assertEquals('Called Finally.', fread(fopen($file, 'r'), 1024));
         @unlink($file);
     }
+
+    /**
+     * @throws \Promise\Exceptions\PromiseException
+     */
+    public function testGetResultWithThenFunction()
+    {
+        $promise = (new Promise(function (Resolver $resolve, Rejecter $reject) {
+            $resolve();
+        }))->then(function () {
+            return 'Returned Value.';
+        });
+
+        Promise::all($promise);
+        $this->assertEquals('Returned Value.', $promise->getContext()->getResult());
+    }
+
+    /**
+     * @throws \Promise\Exceptions\PromiseException
+     */
+    public function testGetResultWithCatchFunction()
+    {
+        $promise = (new Promise(function (Resolver $resolve, Rejecter $reject) {
+            $reject();
+        }))->catch(function () {
+            return 'Returned Value.';
+        });
+
+        Promise::all($promise);
+        $this->assertEquals('Returned Value.', $promise->getContext()->getResult());
+    }
 }

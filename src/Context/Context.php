@@ -12,6 +12,7 @@ use Promise\Services\SafetyManager;
 
 /**
  * @property array $parameters The property store parameters dynamically when passed from the main thread context.
+ * @property mixed $result The property store values by Promise processor dynamically.
  */
 class Context extends \Thread
 {
@@ -63,7 +64,7 @@ class Context extends \Thread
     /**
      *
      */
-    public function run()
+    public function run(): void
     {
         ($this->callee)(
             $this->resolver,
@@ -77,7 +78,7 @@ class Context extends \Thread
      * @return Promise
      * @throws PromiseException
      */
-    public static function all(...$promises)
+    public static function all(...$promises): Promise
     {
         if (!empty($promises[0]) && is_array($promises[0])) {
             $promises = $promises[0];
@@ -112,7 +113,7 @@ class Context extends \Thread
      * @return Promise
      * @throws PromiseException
      */
-    public static function race(...$promises)
+    public static function race(...$promises): Promise
     {
         if (!empty($promises[0])) {
             $promises = $promises[0];
@@ -190,7 +191,7 @@ class Context extends \Thread
     /**
      * @return string
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -199,7 +200,7 @@ class Context extends \Thread
      * @param $status
      * @return $this
      */
-    public function setStatus($status)
+    public function setStatus($status): self
     {
         $this->status = $status;
         return $this;
@@ -208,7 +209,7 @@ class Context extends \Thread
     /**
      * @return null|Collection
      */
-    public function getCollection()
+    public function getCollection(): Collection
     {
         return $this->collection;
     }
@@ -219,7 +220,7 @@ class Context extends \Thread
      * @return Processor
      * @throws PromiseException
      */
-    private function listener($onFulfilled = null, $rejected = null)
+    private function listener($onFulfilled = null, $rejected = null): Processor
     {
         return new Processor($this, function () use (&$onFulfilled, &$rejected) {
             $this->collection->synchronized(function (
@@ -233,15 +234,25 @@ class Context extends \Thread
                 if (is_callable($onFulfilled) &&
                     $context->collection->getStatus() === Promise::FULFILLED
                 ) {
-                    $onFulfilled(...$context->parameters);
+                    $this->result = $onFulfilled(...$context->parameters);
                 }
                 if (is_callable($rejected) &&
                     $context->collection->getStatus() === Promise::REJECTED
                 ) {
-                    $rejected(...$context->parameters);
+                    $this->result = $rejected(...$context->parameters);
                 }
             }, $this, $onFulfilled, $rejected);
         });
+    }
+
+    /**
+     * Get dynamically stored values by Processor
+     *
+     * @return mixed|null
+     */
+    public function getResult()
+    {
+        return $this->result ?? null;
     }
 
 

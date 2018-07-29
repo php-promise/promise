@@ -29,8 +29,7 @@ class Promise
     {
         if (!class_exists('Thread')) {
             throw new PromiseException(
-                'Promise needs Thread class.' .
-                'Did you forgot to install pthreads extensions?'
+                'Promise needs Thread class. Did you forgot to install pthreads extensions?'
             );
         }
 

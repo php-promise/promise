@@ -181,3 +181,18 @@ e.g.)
      echo 'You can see this message when `$resolve` or `$catch` called.';
 });
 ```
+
+# Unit Tests
+
+PHPUnit Testing:
+
+```
+$ docker-compose -f tests/docker-compose.yml up -d
+$ docker-compose -f tests/docker-compose.yml exec php_promise_test php /tmp/vendor/bin/phpunit /tmp/tests/Test 
+```
+
+Code Sniffer Testing:
+```
+$ docker-compose -f tests/docker-compose.yml up -d
+$ docker-compose -f tests/docker-compose.yml exec php_promise_test php /tmp/vendor/bin/phpcs --standard=PSR2 /tmp/src 
+```
