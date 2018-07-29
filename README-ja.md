@@ -1,31 +1,30 @@
 # PHP Promise
 <p align="center"><img src="https://user-images.githubusercontent.com/1282995/42281650-2887c028-7fdf-11e8-962c-bf7bdd339fdf.png"></p>
-The PHP Promise is a library that asynchronously processes PHP like JavaScript Promise.
-The library uses `pthreads`, which is a PHP extension.
-If you want to use the library, you need to install the `pthreads` extension.
-You may also need to re-compile PHP with `--enable-maincontainer-zts` option in configuration.
+PHP PromiseはJavaScriptのPromiseのような記述で、マルチスレッディングで非同期を実現するためのライブラリです。
+このライブラリはPHP拡張の `pthreads` を必要とし、このライブラリを利用するためには拡張をインストールする必要があります。
+また、 `--enable-maincontainer-zts` が有効でない場合、再度PHP本体をビルドし直す必要があります。
 
-See also: [https://github.com/krakjoe/pthreads](https://github.com/krakjoe/pthreads)
+(参照) [https://github.com/krakjoe/pthreads](https://github.com/krakjoe/pthreads)
 
-For example in Dockerfile:
+下記は `pthreads` を扱うためのDockerfileのサンプルです。
 
 ```Dockerfile
 FROM centos:7
 
-# Setup
+# セットアップを行います
 RUN yum -y install epel-release wget
 RUN cd /tmp && wget http://jp2.php.net/get/php-7.2.7.tar.gz/from/this/mirror -O php-7.2 && tar zxvf php-7.2
 
-# Dependencies installation
+# 依存パッケージをインストールします
 RUN yum -y install git gcc gcc-c++ make libxml2-devel libicu-devel openssl-devel
 
-# PHP installation
+# PHPをインストールします。
 RUN cd /tmp/php-7.2.7 && \
     ./configure --enable-maintainer-zts --enable-pcntl --enable-intl --enable-zip --enable-pdo --enable-sockets --with-openssl && \
     make && \
     make install
 
-# pthreads installation
+# pthreadsをインストールします
 RUN yum -y install autoconf
 RUN cd /tmp && git clone https://github.com/krakjoe/pthreads.git && cd pthreads && \
     phpize && \
@@ -33,30 +32,30 @@ RUN cd /tmp && git clone https://github.com/krakjoe/pthreads.git && cd pthreads 
     make && \
     make install
 
-# Add an extension to php.ini
+# pthreadsの設定をphp.iniに書き込みます
 RUN echo extension=pthreads.so >> /usr/local/lib/php.ini
 ```
 
-# The PHP Promise structure
-The PHP Promise structure is below.
+# PHP Promiseの仕組み
+PHP Promiseの仕組みは下記の通りとなります。
 ![The Promise structure](https://user-images.githubusercontent.com/1282995/42298295-20c6456a-8040-11e8-9c66-8b3422d327c8.jpeg) 
 
-# Requirements
+# 必要な環境
 
 - PHP >= 7.2
 - pthreads 3
 
 
-# Get Started
+# クイックスタート
 
-Run the composer require command.
+composerコマンドを実行します。
 ```
 $ composer require php-promise/promise:dev-master
 ```
 
-Next, run the example code below and you will get started to Promise
+次に下記のサンプルを実行することによりPHP Promiseを開始できます。
 ```php
-// After 5 seconds, Promise will say a message "solved It!"
+// 5秒後, PHP Promise は "solved It!" を出力します。
 $promise = (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject) {
     sleep(5);
     $resolve("Solved It!\n");
@@ -65,10 +64,10 @@ $promise = (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject) 
 });
 ```
 
-You can use `Promise::all` which waits multiple Promise processing, which will collect Promise results.
+また、 複数のPromiseの実行を待機するため、 `Promise::all` を使用することが可能です。
 
 ```php
-// Say as follows:
+// 下記のような出力となります:
 // [RESOLVE] After 3 seconds says!
 // [RESOLVE] After 5 seconds says!
 // Sorry, Promise was rejected.
@@ -92,7 +91,7 @@ $promises[] = (new \Promise\Promise(function (Resolver $resolve, Rejecter $rejec
     echo "Sorry, Promise was rejected\n";
 });
 
-// or
+// または、
 
 \Promise\Promise::all($promises[0], $promises[1])->then(function () {
     echo "Okay, Promise is glad\n";
@@ -101,23 +100,23 @@ $promises[] = (new \Promise\Promise(function (Resolver $resolve, Rejecter $rejec
 });
 ```
 
-# Provide methods
+# 提供しているメソッド
 
 ## Promise::__construct( callable $callee( Resolver $resolve, Rejecter $reject, ...$parameters ), ...$parameters ): Promise
 - The constructor is called from your code and immediately runs `$callee` function.
-- `$callee` has two parameters that are `$resolve` and `$reject`, which are callable functions.
-- `$resolve` is called in `$callee`, which immediately runs the resolved function in `Promise::then`.
-- `$reject` is called in `$callee`, which immediately runs the rejected function in `Promise::catch`.
-- You can define `$parameters` which you want to pass resource, object and any types to Promise context.
+- `$callee` は `$resolve` と `$reject` の2つのコールバック関数のパラメータを受け取ります。
+- `$resolve` は `$callee` で呼ばれると、即時に `Promise::then` を呼びます。.
+- `$reject` は `$callee` で呼ばれると、即時に `Promise::catch` を呼びます。.
+- `$parameters` を定義すると各コールバックに値を引き渡すことが可能です。.
 
-e.g.)
+例)
 
 ```php
 (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject) {
     // Promise call `then` method when you called `$resolve` here.
     $resolve();
     
-    // Promise call `reject` method when you called `$reject` here.
+    // `$reject` を呼ぶと reject メソッドが実行されます。
     $reject();
 }))->then(function () {
     echo 'You can see this message when `$resolve` called.';
@@ -126,7 +125,7 @@ e.g.)
 });
 ```
 
-e.g.)
+例)
 ```php
 $handle = fopen('test.log', 'rw');
 (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject, $handle) {
@@ -137,7 +136,7 @@ $handle = fopen('test.log', 'rw');
 ```
 
 ## Promise::all( Promise ...$promises ): Promise
-- Wait multiple promise processing, then which will collect to promise results.
+- 複数のPromiseの処理結果を待ちます。
 
 ## Promise::race( Promise ...$promises ): Promise
 - `Promise::race` return a Promise when promise get a success or failed.
@@ -145,7 +144,7 @@ $handle = fopen('test.log', 'rw');
 ## Promise::then( callable $onFulfilled, callable $rejected ): Promise
 - `Promise::catch` is called when `$resolve` is called.
 
-e.g.)
+例)
 ```php
 (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject) {
     $resolve();
@@ -155,9 +154,9 @@ e.g.)
 ```
 
 ## Promise::catch( callable $rejected ): Promise
-- `Promise::catch` is called when `$reject` is called.
+- Promise上で、 `$reject` が呼ばれた際に `Promise::catch` が呼ばれます。
 
-e.g.)
+例)
 ```php
 (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject) {
     $reject();
@@ -167,9 +166,9 @@ e.g.)
 ```
 
 ## Promise::finally( callable $onFinally ): Promise
-- `Promise::finally` is called when `$resolve` or `$catch` is called.
+- Promise上で `$resolve` または `$catch` が呼ばれた際に `Promise::finally` が呼ばれます。
 
-e.g.)
+例)
 ```php
 (new \Promise\Promise(function (Resolver $resolve, Rejecter $reject) {
     $resolve();
