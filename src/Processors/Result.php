@@ -5,8 +5,12 @@ namespace Promise\Processors;
 use Promise\Collection\Collection;
 use Promise\Context\Context;
 use Promise\Exceptions\PromiseException;
+use Promise\Services\SafetyLoader;
 use Promise\Services\SafetyManager;
 
+/**
+ * @property mixed $dependencies The property inheritance parent classes and functions with SafetyLoader.
+ */
 class Result extends \Thread
 {
 
@@ -19,11 +23,25 @@ class Result extends \Thread
      * Result constructor.
      * @param Context $context
      * @throws PromiseException
+     * @throws \ReflectionException
      */
     public function __construct(Context $context)
     {
         $this->context = $context;
-        $this->start();
+        if (SafetyLoader::isEnabled()) {
+            $this->dependencies = [
+                SafetyLoader::getLoadedComposer(),
+                SafetyLoader::getLoadedFiles(),
+
+                // loaded safety loader file.
+                __DIR__ . '/../Services/SafetyLoader.php',
+            ];
+        }
+        $this->start(
+            SafetyLoader::isEnabled()
+                ? SafetyLoader::OPTIONS
+                : PTHREADS_INHERIT_ALL
+        );
         SafetyManager::register($this);
     }
 
@@ -31,9 +49,14 @@ class Result extends \Thread
     /**
      * @param $status
      * @param mixed ...$parameters
+     * @throws \ReflectionException
      */
     protected function invoker($status, ...$parameters)
     {
+        if (property_exists($this, 'dependencies')) {
+            require_once $this->dependencies[2];
+            SafetyLoader::loadDependencies($this, $this->dependencies);
+        }
         $this->context
             ->setStatus($status)
             ->getCollection()

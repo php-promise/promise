@@ -188,4 +188,24 @@ class PromiseTest extends TestCase
         Promise::all($promise);
         $this->assertEquals('Returned Value.', $promise->getContext()->getResult());
     }
+
+    /**
+     * @throws \Promise\Exceptions\PromiseException
+     */
+    public function testRunWithSafetyLoader()
+    {
+        require_once __DIR__ . '/../Mocks/Dummy.php';
+        Promise::setSafety(true);
+        $promise = (new Promise(function (Resolver $resolve, Rejecter $reject) {
+            // call dummy on safety thread
+            dummy();
+            new \Promise\Test\Dummy();
+            $resolve();
+        }))->then(function () {
+            return 'Returned Value.';
+        });
+
+        Promise::all($promise);
+        $this->assertEquals('Returned Value.', $promise->getContext()->getResult());
+    }
 }

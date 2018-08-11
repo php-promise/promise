@@ -27,7 +27,7 @@
   },
   "scripts" : {
     "phpcs" : "vendor/bin/phpcs --standard=PSR2 src/",
-    "phpunit" : "docker-compose -f tests/docker-compose.yml up -d --build &>/dev/null && docker-compose -f tests/docker-compose.yml exec -T php_promise_test /tmp/vendor/bin/phpunit /tmp/tests/Test/ && docker kill $(docker ps -n=1 -q) &>/dev/null"
+    "phpunit" : "docker-compose -f tests/docker-compose.yml build && docker-compose -f tests/docker-compose.yml up -d &>/dev/null && docker-compose -f tests/docker-compose.yml exec -T php_promise_test /tmp/vendor/bin/phpunit /tmp/tests/Test/ && docker kill $(docker ps -n=1 -q) &>/dev/null"
   },
   "minimum-stability": "dev",
   "require-dev": {

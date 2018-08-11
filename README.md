@@ -101,6 +101,15 @@ $promises[] = (new \Promise\Promise(function (Resolver $resolve, Rejecter $rejec
 });
 ```
 
+# Supported Frameworks
+- Laravel
+  - Need to use SafetyLoader.
+- CakePHP
+
+# Use Case
+- For example, you can use it to run heavely processing.
+
+
 # Provide methods
 
 ## Promise::__construct( callable $callee( Resolver $resolve, Rejecter $reject, ...$parameters ), ...$parameters ): Promise

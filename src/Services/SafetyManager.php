@@ -16,6 +16,8 @@ class SafetyManager
      */
     public static function register($thread)
     {
+        static $registeredFatalErrorCatcher = false;
+
         if (is_array($thread)) {
             foreach ($thread as $child) {
                 static::register($child);

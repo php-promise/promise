@@ -8,11 +8,13 @@ use Promise\Processors\Processor;
 use Promise\Processors\Resolver;
 use Promise\Processors\Rejecter;
 use Promise\Promise;
+use Promise\Services\SafetyLoader;
 use Promise\Services\SafetyManager;
 
 /**
  * @property array $parameters The property store parameters dynamically when passed from the main thread context.
  * @property mixed $result The property store values by Promise processor dynamically.
+ * @property mixed $dependencies The property inheritance parent classes and functions with SafetyLoader.
  */
 class Context extends \Thread
 {
@@ -47,6 +49,7 @@ class Context extends \Thread
      * @param callable $callee
      * @param mixed ...$parameters
      * @throws PromiseException
+     * @throws \ReflectionException
      */
     public function __construct(callable $callee, ...$parameters)
     {
@@ -57,15 +60,30 @@ class Context extends \Thread
 
         // dynamically creating
         $this->parameters = $parameters;
-        $this->start();
+        if (SafetyLoader::isEnabled()) {
+            $this->dependencies = [
+                SafetyLoader::getLoadedComposer(),
+                SafetyLoader::getLoadedFiles(),
+
+                // loaded safety loader file.
+                __DIR__ . '/../Services/SafetyLoader.php',
+            ];
+        }
+        $this->start(
+            SafetyLoader::isEnabled()
+                ? SafetyLoader::OPTIONS
+                : PTHREADS_INHERIT_ALL
+        );
         SafetyManager::register($this);
     }
 
-    /**
-     *
-     */
+
     public function run(): void
     {
+        if (property_exists($this, 'dependencies')) {
+            require_once $this->dependencies[2];
+            SafetyLoader::loadDependencies($this, $this->dependencies);
+        }
         ($this->callee)(
             $this->resolver,
             $this->rejecter,

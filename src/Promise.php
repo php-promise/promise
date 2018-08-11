@@ -6,6 +6,7 @@ use Promise\Context\Context;
 use Promise\Exceptions\PromiseException;
 use Promise\Processors\Rejecter;
 use Promise\Processors\Resolver;
+use Promise\Services\SafetyLoader;
 
 class Promise
 {
@@ -19,10 +20,9 @@ class Promise
     private $context = null;
 
     /**
-     * Get a Promise.
-     *
-     * @param callable $callee Set a closure
-     * @param mixed ...$parameters If you want to pass parameters to closure, you can define parameters here.
+     * Promise constructor.
+     * @param callable $callee
+     * @param mixed ...$parameters
      * @throws PromiseException
      */
     public function __construct(callable $callee, ...$parameters)
@@ -106,5 +106,17 @@ class Promise
     public function getContext()
     {
         return $this->context;
+    }
+
+    /**
+     * The method is available to set run to safe the Promise.
+     * pthreads has problems that cannot serialize illegal classes and closures.
+     * The method solves its problems.
+     *
+     * @param bool $which
+     */
+    public static function setSafety(bool $which): void
+    {
+        SafetyLoader::setEnable(true);
     }
 }
