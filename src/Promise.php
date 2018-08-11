@@ -109,7 +109,7 @@ class Promise
     }
 
     /**
-     * The method is available to set run to safe the Promise.
+     * The method use safety mode.
      * pthreads has problems that cannot serialize illegal classes and closures.
      * The method solves its problems.
      *
