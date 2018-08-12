@@ -57,6 +57,9 @@ class SafetyLoader
         $loaded = [];
         try {
             foreach (array_merge(get_declared_classes(), get_declared_interfaces(), get_declared_traits()) as $class) {
+                if (strpos($class, 'class@') !== false) {
+                    continue;
+                }
                 $loaded[] = (new \ReflectionClass($class))->getFileName();
             }
         } catch (\ReflectionException $exception) {
