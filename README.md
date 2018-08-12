@@ -1,5 +1,6 @@
 # PHP Promise
 <p align="center"><img src="https://user-images.githubusercontent.com/1282995/42281650-2887c028-7fdf-11e8-962c-bf7bdd339fdf.png"></p>
+
 The PHP Promise is a library that asynchronously processes PHP like JavaScript Promise.
 The library uses `pthreads`, which is a PHP extension.
 If you want to use the library, you need to install the `pthreads` extension.

@@ -1,5 +1,6 @@
 # PHP Promise
 <p align="center"><img src="https://user-images.githubusercontent.com/1282995/42281650-2887c028-7fdf-11e8-962c-bf7bdd339fdf.png"></p>
+
 PHP PromiseはJavaScriptのPromiseのような記述で、マルチスレッディングで非同期を実現するためのライブラリです。
 このライブラリはPHP拡張の `pthreads` を必要とし、このライブラリを利用するためには拡張をインストールする必要があります。
 また、 `--enable-maincontainer-zts` が有効でない場合、再度PHP本体をビルドし直す必要があります。
