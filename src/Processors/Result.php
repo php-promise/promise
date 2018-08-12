@@ -5,6 +5,7 @@ namespace Promise\Processors;
 use Promise\Collection\Collection;
 use Promise\Context\Context;
 use Promise\Exceptions\PromiseException;
+use Promise\Promise;
 use Promise\Services\SafetyLoader;
 use Promise\Services\SafetyManager;
 
@@ -23,7 +24,6 @@ class Result extends \Thread
      * Result constructor.
      * @param Context $context
      * @throws PromiseException
-     * @throws \ReflectionException
      */
     public function __construct(Context $context)
     {
@@ -37,6 +37,7 @@ class Result extends \Thread
                 __DIR__ . '/../Services/SafetyLoader.php',
             ];
         }
+
         $this->start(
             SafetyLoader::isEnabled()
                 ? SafetyLoader::OPTIONS
@@ -45,11 +46,9 @@ class Result extends \Thread
         SafetyManager::register($this);
     }
 
-
     /**
      * @param $status
      * @param mixed ...$parameters
-     * @throws \ReflectionException
      */
     protected function invoker($status, ...$parameters)
     {
@@ -65,5 +64,13 @@ class Result extends \Thread
                     ->setStatus($status)
                     ->notifyOne();
             }, $this->context->getCollection());
+    }
+
+    /**
+     * @return null|Context
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 }

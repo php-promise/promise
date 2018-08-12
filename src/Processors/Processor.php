@@ -43,4 +43,12 @@ class Processor extends \Thread
     {
         \Closure::bind($this->callee, $this->context)($this);
     }
+
+    /**
+     * @return Context
+     */
+    public function getContext(): Context
+    {
+        return $this->context;
+    }
 }

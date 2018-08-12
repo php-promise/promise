@@ -2,7 +2,10 @@
 
 namespace Promise\Services;
 
+use Promise\Context\Context;
 use Promise\Exceptions\PromiseException;
+use Promise\Processors\Processor;
+use Promise\Processors\Result;
 use Promise\Promise;
 
 class SafetyManager

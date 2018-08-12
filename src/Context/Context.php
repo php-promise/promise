@@ -49,7 +49,6 @@ class Context extends \Thread
      * @param callable $callee
      * @param mixed ...$parameters
      * @throws PromiseException
-     * @throws \ReflectionException
      */
     public function __construct(callable $callee, ...$parameters)
     {
@@ -84,6 +83,7 @@ class Context extends \Thread
             require_once $this->dependencies[2];
             SafetyLoader::loadDependencies($this, $this->dependencies);
         }
+
         ($this->callee)(
             $this->resolver,
             $this->rejecter,
