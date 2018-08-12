@@ -112,11 +112,19 @@ class Promise
      * The method use safety mode.
      * pthreads has problems that cannot serialize illegal classes and closures.
      * The method solves its problems.
-     *
-     * @param bool $which
      */
-    public static function setSafety(bool $which): void
+    public static function enableSafety(): void
     {
         SafetyLoader::setEnable(true);
+    }
+
+    /**
+     * The method do not use safety mode.
+     * pthreads has problems that cannot serialize illegal classes and closures.
+     * The method solves its problems.
+     */
+    public static function disableSafety(): void
+    {
+        SafetyLoader::setEnable(false);
     }
 }

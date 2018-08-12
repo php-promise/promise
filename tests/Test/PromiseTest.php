@@ -195,7 +195,7 @@ class PromiseTest extends TestCase
     public function testRunWithSafetyLoader()
     {
         require_once __DIR__ . '/../Mocks/Dummy.php';
-        Promise::setSafety(true);
+        Promise::enableSafety();
         $promise = (new Promise(function (Resolver $resolve, Rejecter $reject) {
             // call dummy on safety thread
             dummy();
