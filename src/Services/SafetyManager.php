@@ -36,7 +36,7 @@ class SafetyManager
             throw new PromiseException('Passed parameters are not instantiate by Thread.');
         }
 
-        static::$registeredThreads[] = get_class($thread);
+        static::$registeredThreads[] = $thread;
 
         register_shutdown_function(function (\Thread $thread) {
             if ($thread->isStarted() &&
@@ -47,7 +47,7 @@ class SafetyManager
         }, $thread);
     }
 
-    public static function getRegistered()
+    public static function getRegisteredThreads()
     {
         return static::$registeredThreads;
     }

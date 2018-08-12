@@ -80,7 +80,6 @@ class SafetyLoader
                 }
             }
         } catch (\ReflectionException $exception) {
-
         }
 
         // No composer.
