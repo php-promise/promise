@@ -1,6 +1,6 @@
 <?php
 
-namespace Promise\Test;
+namespace Promise\Test\Mocks;
 
 class Dummy
 {
