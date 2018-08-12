@@ -32,46 +32,55 @@ class SafetyLoader
 
     /**
      * @return array
-     * @throws \ReflectionException
      */
     public static function getLoadedFunction(): array
     {
         $loaded = [];
-        foreach (get_defined_functions()['user'] as $function) {
-            if (strpos($function, 'Closure@') !== false) {
-                continue;
+        try {
+            foreach (get_defined_functions()['user'] as $function) {
+                if (strpos($function, 'Closure@') !== false) {
+                    continue;
+                }
+                $loaded[] = (new \ReflectionFunction($function))->getFileName();
             }
-            $loaded[] = (new \ReflectionFunction($function))->getFileName();
+        } catch (\ReflectionException $exception) {
+            // do nothing
         }
         return $loaded;
     }
 
     /**
      * @return array
-     * @throws \ReflectionException
      */
     public static function getLoadedClasses(): array
     {
         $loaded = [];
-        foreach (array_merge(get_declared_classes(), get_declared_interfaces(), get_declared_traits()) as $class) {
-            $loaded[] = (new \ReflectionClass($class))->getFileName();
+        try {
+            foreach (array_merge(get_declared_classes(), get_declared_interfaces(), get_declared_traits()) as $class) {
+                $loaded[] = (new \ReflectionClass($class))->getFileName();
+            }
+        } catch (\ReflectionException $exception) {
+            // do nothing
         }
         return $loaded;
     }
 
     /**
      * @return array|null
-     * @throws \ReflectionException
      */
     public static function getLoadedComposer(): ?array
     {
-        foreach (get_declared_classes() as $class) {
-            if (strpos($class, 'ComposerAutoloaderInit') !== false) {
-                return [
-                    'initializer' => $class,
-                    'file' => (new \ReflectionClass($class))->getFileName(),
-                ];
+        try {
+            foreach (get_declared_classes() as $class) {
+                if (strpos($class, 'ComposerAutoloaderInit') !== false) {
+                    return [
+                        'initializer' => $class,
+                        'file' => (new \ReflectionClass($class))->getFileName(),
+                    ];
+                }
             }
+        } catch (\ReflectionException $exception) {
+
         }
 
         // No composer.
@@ -80,7 +89,6 @@ class SafetyLoader
 
     /**
      * @return array
-     * @throws \ReflectionException
      */
     public static function getLoadedFiles(): array
     {
@@ -95,7 +103,6 @@ class SafetyLoader
     /**
      * @param array $inheritanceFiles
      * @param array $ignoreFiles
-     * @throws \ReflectionException
      */
     public static function inheritanceIncludedArchitecturesFromParent(array $inheritanceFiles, array $ignoreFiles): void
     {
@@ -119,25 +126,21 @@ class SafetyLoader
 
     /**
      * @param \Thread $thread
-     * @param array $dependencies
+     * @param \Volatile $dependencies
      */
     public static function loadDependencies(\Thread $thread, \Volatile $dependencies)
     {
-        try {
-            $dependencies = (array) $dependencies;
-            require_once $dependencies[2];
+        $dependencies = (array) $dependencies;
+        require_once $dependencies[2];
 
-            $ignoreFiles = [];
-            if ($dependencies[0] !== null) {
-                static::callComposerInitializer(
-                    $dependencies[0]['file'],
-                    $dependencies[0]['initializer']
-                );
-                $ignoreFiles[] = $dependencies[0]['file'];
-            }
-            static::inheritanceIncludedArchitecturesFromParent((array) $dependencies[1], $ignoreFiles);
-        } catch (\ReflectionException $exception) {
-            // do something
+        $ignoreFiles = [];
+        if ($dependencies[0] !== null) {
+            static::callComposerInitializer(
+                $dependencies[0]['file'],
+                $dependencies[0]['initializer']
+            );
+            $ignoreFiles[] = $dependencies[0]['file'];
         }
+        static::inheritanceIncludedArchitecturesFromParent((array) $dependencies[1], $ignoreFiles);
     }
 }

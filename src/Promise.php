@@ -19,12 +19,7 @@ class Promise
      */
     private $context = null;
 
-    /**
-     * Promise constructor.
-     * @param callable $callee
-     * @param mixed ...$parameters
-     * @throws PromiseException
-     */
+
     public function __construct(callable $callee, ...$parameters)
     {
         if (!class_exists('Thread')) {
