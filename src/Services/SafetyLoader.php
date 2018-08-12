@@ -12,14 +12,14 @@ class SafetyLoader
     /**
      * @var bool
      */
-    private static $isEnable = false;
+    private static $isEnabled = false;
 
     /**
      * @param $which
      */
-    public static function setEnable(bool $which)
+    public static function setEnabled(bool $which)
     {
-        static::$isEnable = $which;
+        static::$isEnabled = $which;
     }
 
     /**
@@ -27,7 +27,7 @@ class SafetyLoader
      */
     public static function isEnabled(): bool
     {
-        return static::$isEnable;
+        return static::$isEnabled;
     }
 
     /**

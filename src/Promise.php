@@ -115,7 +115,7 @@ class Promise
      */
     public static function enableSafety(): void
     {
-        SafetyLoader::setEnable(true);
+        SafetyLoader::setEnabled(true);
     }
 
     /**
@@ -125,6 +125,6 @@ class Promise
      */
     public static function disableSafety(): void
     {
-        SafetyLoader::setEnable(false);
+        SafetyLoader::setEnabled(false);
     }
 }
