@@ -62,7 +62,7 @@ class Result extends \Thread
             ->synchronized(function (Collection $collection) use ($status) {
                 $collection
                     ->setStatus($status)
-                    ->notifyOne();
+                    ->notify();
             }, $this->context->getCollection());
     }
 

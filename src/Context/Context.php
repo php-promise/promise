@@ -145,20 +145,17 @@ class Context extends \Thread
         }
 
         $resultStatus = Promise::PENDING;
-        while ($resultStatus === Promise::PENDING) {
+        do {
             // Stopping
             foreach ($promises as $promise) {
-                if ($promise->getContext()->getStatus() === Promise::FULFILLED) {
-                    $resultStatus = Promise::FULFILLED;
-                    break;
-                }
-                if ($promise->getContext()->getStatus() === Promise::REJECTED) {
-                    $resultStatus = Promise::REJECTED;
-                    break;
+                switch ($resultStatus = $promise->getContext()->getStatus()) {
+                    case Promise::FULFILLED:
+                    case Promise::REJECTED:
+                        break 2;
                 }
             }
-            usleep(100);
-        }
+            usleep(20);
+        } while ($resultStatus === Promise::PENDING);
 
         foreach ($promises as $promise) {
             static::await($promise);

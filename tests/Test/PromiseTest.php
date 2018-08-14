@@ -105,6 +105,38 @@ class PromiseTest extends TestCase
     /**
      * @throws \Promise\Exceptions\PromiseException
      */
+    public function testMultiplePromiseCallingThenWithRaceWithSleeps()
+    {
+        $promise = Promise::race([
+            new Promise(function (Resolver $resolve, Rejecter $reject) { sleep(1); $resolve(); }),
+            new Promise(function (Resolver $resolve, Rejecter $reject) { sleep(2); $resolve(); }),
+            new Promise(function (Resolver $resolve, Rejecter $reject) { sleep(3); $resolve(); }),
+        ]);
+
+        Promise::all($promise);
+
+        $this->assertEquals(Promise::FULFILLED, $promise->getContext()->getStatus());
+    }
+
+    /**
+     * @throws \Promise\Exceptions\PromiseException
+     */
+    public function testMultiplePromiseCallingCatchWithRaceWithSleeps()
+    {
+        $promise = Promise::race([
+            new Promise(function (Resolver $resolve, Rejecter $reject) { sleep(1); $reject(); }),
+            new Promise(function (Resolver $resolve, Rejecter $reject) { sleep(2); $resolve(); }),
+            new Promise(function (Resolver $resolve, Rejecter $reject) { sleep(3); $resolve(); }),
+        ]);
+
+        Promise::all($promise);
+
+        $this->assertEquals(Promise::REJECTED, $promise->getContext()->getStatus());
+    }
+
+    /**
+     * @throws \Promise\Exceptions\PromiseException
+     */
     public function testPromiseGetThen()
     {
         $file = tempnam(sys_get_temp_dir(), 'PHP');
