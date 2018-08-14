@@ -10,9 +10,10 @@ use Promise\Services\SafetyLoader;
 
 class Promise
 {
-    const PENDING   = 'pending';
-    const FULFILLED = 'fulfilled';
-    const REJECTED  = 'rejected';
+    const PENDING   = Task::PENDING;
+    const FULFILLED = Task::FULFILLED;
+    const REJECTED  = Task::REJECTED;
+    const ERROR     = Task::ERROR;
 
     /**
      * @var null|Context

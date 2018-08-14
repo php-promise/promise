@@ -7,8 +7,10 @@ use Promise\Promise;
 
 class Rejecter extends Result
 {
+
     /**
      * @param mixed ...$parameters
+     * @throws \Promise\Exceptions\PromiseException
      */
     public function __invoke(...$parameters)
     {

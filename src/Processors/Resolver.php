@@ -10,6 +10,7 @@ class Resolver extends Result
 
     /**
      * @param mixed ...$parameters
+     * @throws \Promise\Exceptions\PromiseException
      */
     public function __invoke(...$parameters)
     {

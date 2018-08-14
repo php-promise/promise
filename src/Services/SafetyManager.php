@@ -7,6 +7,7 @@ use Promise\Exceptions\PromiseException;
 use Promise\Processors\Processor;
 use Promise\Processors\Result;
 use Promise\Promise;
+use Promise\Task;
 
 class SafetyManager
 {
@@ -38,7 +39,7 @@ class SafetyManager
 
         static::$registeredThreads[] = $thread;
 
-        register_shutdown_function(function (\Thread $thread) {
+        register_shutdown_function(function (Task $thread) {
             if ($thread->isStarted() &&
                 !$thread->isJoined()
             ) {

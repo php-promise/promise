@@ -5,11 +5,12 @@ namespace Promise\Processors;
 use Promise\Context\Context;
 use Promise\Services\SafetyLoader;
 use Promise\Services\SafetyManager;
+use Promise\Task;
 
 /**
  * @property mixed $dependencies The property inheritance parent classes and functions with SafetyLoader.
  */
-class Processor extends \Thread
+class Processor extends Task
 {
     /**
      * @var callable|null

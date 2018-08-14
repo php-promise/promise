@@ -6,15 +6,10 @@ use Promise\Exceptions\PromiseException;
 use Promise\Processors\Processor;
 use Promise\Promise;
 use Promise\Services\SafetyManager;
+use Promise\Task;
 
-class Collection extends \Thread
+class Collection extends Task
 {
-
-    /**
-     * @var string
-     */
-    public $status = Promise::PENDING;
-
     /**
      * @var array
      */
@@ -35,27 +30,5 @@ class Collection extends \Thread
     public function add(Processor $processor)
     {
         $this->processors[] = $processor;
-    }
-
-    /**
-     * @param string $status
-     * @return $this
-     * @throws PromiseException
-     */
-    public function setStatus(string $status)
-    {
-        if (!in_array($status, [Promise::PENDING, Promise::FULFILLED, Promise::REJECTED])) {
-            throw new PromiseException('Unknown passed status value ' . $status);
-        }
-        $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
     }
 }

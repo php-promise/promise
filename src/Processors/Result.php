@@ -8,11 +8,12 @@ use Promise\Exceptions\PromiseException;
 use Promise\Promise;
 use Promise\Services\SafetyLoader;
 use Promise\Services\SafetyManager;
+use Promise\Task;
 
 /**
  * @property mixed $dependencies The property inheritance parent classes and functions with SafetyLoader.
  */
-class Result extends \Thread
+class Result extends Task
 {
 
     /**
@@ -49,6 +50,7 @@ class Result extends \Thread
     /**
      * @param $status
      * @param mixed ...$parameters
+     * @throws PromiseException
      */
     protected function invoker($status, ...$parameters)
     {

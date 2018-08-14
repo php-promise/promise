@@ -10,19 +10,15 @@ use Promise\Processors\Rejecter;
 use Promise\Promise;
 use Promise\Services\SafetyLoader;
 use Promise\Services\SafetyManager;
+use Promise\Task;
 
 /**
  * @property array $parameters The property store parameters dynamically when passed from the main thread context.
  * @property mixed $result The property store values by Promise processor dynamically.
  * @property mixed $dependencies The property inheritance parent classes and functions with SafetyLoader.
  */
-class Context extends \Thread
+class Context extends Task
 {
-
-    /**
-     * @var string
-     */
-    private $status = Promise::PENDING;
 
     /**
      * @var callable|null
@@ -200,24 +196,6 @@ class Context extends \Thread
     public function finally(callable $onFinally): self
     {
         $this->collection->add($this->listener($onFinally, $onFinally));
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param $status
-     * @return $this
-     */
-    public function setStatus($status): self
-    {
-        $this->status = $status;
         return $this;
     }
 
