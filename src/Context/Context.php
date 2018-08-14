@@ -133,7 +133,7 @@ class Context extends \Thread
      */
     public static function race(...$promises): Promise
     {
-        if (!empty($promises[0])) {
+        if (!empty($promises[0]) && is_array($promises[0])) {
             $promises = $promises[0];
         }
 
