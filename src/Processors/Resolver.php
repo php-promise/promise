@@ -15,5 +15,6 @@ class Resolver extends Result
     public function __invoke(...$parameters)
     {
         return $this->invoker(Promise::FULFILLED, ...$parameters);
+
     }
 }

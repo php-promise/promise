@@ -191,6 +191,10 @@ $handle = fopen('test.log', 'rw');
 });
 ```
 
+# 注意事項
+- Promise の `resolve` 及び `reject` は 他スレッドから他スレッドへ値を渡す際の `pthreads` の仕様の都合により PHP で serialize 可能な値のみしか渡すことはできません。
+例えば、 `fopen` で開いたストリームなどの `resource` などのような値は渡すことはできません。
+
 # ユニットテスト
 
 PHPUnitでのテスト:

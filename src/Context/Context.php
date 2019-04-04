@@ -13,6 +13,7 @@ use Promise\Services\SafetyManager;
 use Promise\Task;
 
 /**
+ * @property array $additionalParameters The property store temporarily parameters for passing it to rejecter and resolver.
  * @property array $parameters The property store parameters dynamically when passed from the main thread context.
  * @property mixed $result The property store values by Promise processor dynamically.
  * @property mixed $dependencies The property inheritance parent classes and functions with SafetyLoader.
@@ -54,7 +55,10 @@ class Context extends Task
         $this->rejecter = new Rejecter($this);
 
         // dynamically creating
+        $this->additionalParameters = serialize([]);
         $this->parameters = $parameters;
+        $this->result = serialize([]);
+
         if (SafetyLoader::isEnabled()) {
             $this->dependencies = [
                 SafetyLoader::getLoadedComposer(),
@@ -224,15 +228,17 @@ class Context extends Task
                 if ($context->collection->getStatus() === Promise::PENDING) {
                     $context->collection->wait();
                 }
+
+                $additionalParameters = unserialize($this->additionalParameters);
                 if (is_callable($onFulfilled) &&
                     $context->collection->getStatus() === Promise::FULFILLED
                 ) {
-                    $this->result = $onFulfilled(...$context->parameters);
+                    $this->result = serialize($onFulfilled(...$additionalParameters, ...$context->parameters));
                 }
                 if (is_callable($rejected) &&
                     $context->collection->getStatus() === Promise::REJECTED
                 ) {
-                    $this->result = $rejected(...$context->parameters);
+                    $this->result = serialize($rejected(...$additionalParameters, ...$context->parameters));
                 }
             }, $this, $onFulfilled, $rejected);
         });
@@ -245,7 +251,7 @@ class Context extends Task
      */
     public function getResult()
     {
-        return $this->result ?? null;
+        return unserialize($this->result ?? null);
     }
 
 
