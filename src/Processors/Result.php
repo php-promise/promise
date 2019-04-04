@@ -58,14 +58,22 @@ class Result extends Task
             require_once $this->dependencies[2];
             SafetyLoader::loadDependencies($this, $this->dependencies);
         }
+
+        // Processes has problem which cannot allocate memory dynamically.
+        // Therefore, prepared allocate string for serialize to this problem to solved.
+        $this->context->additionalParameters = serialize($parameters);
+
         $this->context
             ->setStatus($status)
             ->getCollection()
-            ->synchronized(function (Collection $collection) use ($status) {
-                $collection
-                    ->setStatus($status)
-                    ->notify();
-            }, $this->context->getCollection());
+            ->synchronized(
+                function (Collection $collection) use ($status) {
+                    $collection
+                        ->setStatus($status)
+                        ->notify();
+                },
+                $this->context->getCollection()
+            );
     }
 
     /**

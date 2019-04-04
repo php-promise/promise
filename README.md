@@ -192,6 +192,10 @@ e.g.)
 });
 ```
 
+# Annotations
+- `resolve` and `reject` can pass only serializable values on PHP because of `pthreads` has problem when pass parameters to thread to thread.
+- For example, cannot pass values `resource` which opened by stream as such as `fopen`.
+
 # Unit Tests
 
 PHPUnit Testing:
